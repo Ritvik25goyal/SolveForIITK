@@ -1,0 +1,42 @@
+body{
+    position: relative;
+    background-image: url('../digital-painting-mountain-with-colorful-tree-foreground.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+
+}
+.container{
+    /* position: absolute; */
+    padding-top: 100px;
+}
+.btn{
+    position: absolute;
+    margin-top: 50px;
+    left: 47vw;
+}
+.output{
+    /* position: absolute; */
+    /* margin: 200px ; */
+    margin-top: 200px;
+    color: white;
+
+}
+.loader{
+    position : fixed;
+    top : 0;
+    left: 0 ;
+    width: 100vw;
+    height: 100vh;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    background-color: beige;
+    transition: opacity 0.75s, visibility 0.75s;
+}
+
+.loader-hidden{
+    content: "";
+    width: 75px;
+    height: 75px;
+    border: 15px solid;
+}
