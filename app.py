@@ -14,7 +14,7 @@ from flask import Flask , jsonify, render_template,request
 #         print("unkown")
 progress = "the progress"
 output = 'Here comes the output. wait for it'
-network_dic = {'Library':['172.17.63.254','/20'] , 'Hall13':['172.23.157.254','/24'] , 'L20':['172.17.31.254','/21'] , 'Studentlounge':['172.17.23.254','/21'], 'KD':['172.17.47.254','/21']}
+network_dic = {'Library':['172.17.63.254','/20'] , 'Hall13':['172.23.157.254','/21'] , 'L20':['172.17.31.254','/21'] , 'Studentlounge':['172.17.23.254','/21'], 'KD':['172.17.47.254','/21']}
 
 def networkscanner(ip,subnet):
     network = ip + subnet
