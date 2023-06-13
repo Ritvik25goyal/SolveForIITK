@@ -58,8 +58,5 @@ def main():
         print(output)
     return render_template('index.html',output1 = output,progress_perc=progress)
 
-@app.route('/update_data')
-def update_data():
-    return render_template('index.html',output1 = output,progress_perc = progress)
 
 app.run()
