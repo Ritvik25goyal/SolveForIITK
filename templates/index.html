@@ -26,11 +26,18 @@
             <label for="location" class="form-label visually-hidden">location</label>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
+        <h1 class="output text-center"> {{ progress_perc }} </h1>
+        <h1 id="data">{{data}}</h1>
         <h1 class="output text-center"> {{ output1 }} </h1>
     </div>
     <!-- <div class ="loader"></div> -->
     
-
+    <script>
+        function updateData() {
+            window.location.href = '/update_data';
+        }
+        setInterval(updateData, 10000);
+    </script>
 
 
     <!--bootstrap js script-->

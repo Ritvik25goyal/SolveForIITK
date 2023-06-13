@@ -1,40 +1,65 @@
-import nmap
-from flask import Flask , render_template,request
+# import nmap
+from libnmap.process import NmapProcess
+from libnmap.parser import NmapParser
+from time import sleep
+from flask import Flask , jsonify, render_template,request
 
-network_dic = {'Library':['172.17.63.254','/20'] , 'Hall13':['172.23.157.254','/21'] , 'L20':['172.17.31.254','/21'] , 'Studentlounge':['172.17.23.254','/21'], 'KD':['172.17.47.254','/21']}
-class Network(object):
-    def __init__(self):
-        ip = '127.0.0.1'
-        self.ip = ip
-        subnet = '/24'
-        self.subnet = subnet
-    def networkscanner(self):
-        network = self.ip + self.subnet
-        # network = '172.23.157.254/24'
-        print("SCANNNINGGGG ----->>>")
-        nm = nmap.PortScanner()
-        result = nm.scan(hosts=network ,arguments='-sn')
-        print(nm.scanstats())
-        x = nm.scanstats()
-        return ("The number of host connected to this network is " + x['uphosts'])
+'''For mac address analysis  still working in progress'''
+# from mac_vendor_lookup import MacLookup , BaseMacLookup
+# MacLookup().update_vendors()
+# def mac_scan(mac_address):
+#     try:
+#         print(MacLookup().lookup(mac_address))
+#     except:
+#         print("unkown")
+progress = "the progress"
+output = 'Here comes the output. wait for it'
+network_dic = {'Library':['172.17.63.254','/20'] , 'Hall13':['172.23.157.254','/24'] , 'L20':['172.17.31.254','/21'] , 'Studentlounge':['172.17.23.254','/21'], 'KD':['172.17.47.254','/21']}
+
+def networkscanner(ip,subnet):
+    network = ip + subnet
+    print("SCANNNINGGGG ----->>>")
+    # nm = nmap.PortScanner()
+    # result = nm.scan(hosts=network ,arguments='-sn')
+    # '''for printing vendor of each mac address'''
+    # # for i in result['scan']:
+    # #     if (i=="172.23.157.156"):
+    # #         continue
+    # #     mac_scan(result['scan'][i]['addresses']['mac'])
+
+    nmap_proc = NmapProcess(targets=network, options="-sn")
+    nmap_proc.run_background()
+    while nmap_proc.is_running():
+        global progress 
+        progress = "Progress : "+str(nmap_proc.progress)+"%"
+        print("Nmap Scan running: ETC: {0} DONE: {1}%".format(nmap_proc.etc,nmap_proc.progress))
+        sleep(10)
+    nmap_report = NmapParser.parse(nmap_proc.stdout)
+    return ("The number of host connected to this network is " + str(nmap_report.hosts_up))
+    
+
 
 app = Flask(__name__)
 
-N = Network()
 
-def nmapf(a):
-    N.ip = network_dic[a][0]
-    N.subnet = network_dic[a][1]
-    return N.networkscanner()
+
+def do_scan(a):
+    ip = network_dic[a][0]
+    subnet = network_dic[a][1]
+    return (networkscanner(ip,subnet))
 
 @app.route("/",methods=['GET','POST'])
 def main():
-    output = 'hosts'
+    global output
+    global progress
     if(request.method=='POST'):
         Place_request = request.form.get('location')
-        output = nmapf(Place_request)
+        output = do_scan(Place_request)
         print(output)
-    return render_template('index.html',output1 = output)
+    return render_template('index.html',output1 = output,progress_perc=progress)
 
+@app.route('/update_data')
+def update_data():
+    return render_template('index.html',output1 = output,progress_perc = progress)
 
-app.run(debug=True)
+app.run()
